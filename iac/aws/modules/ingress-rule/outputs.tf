@@ -1,4 +1,9 @@
-# output "argocd_hosts" {
-#   description = "argocd ingress hosts"
-#   value       = one([for v in data.kubernetes_ingress_v1.argocd_ingress.spec[0].rule : v.host])
-# }
+output "alb_host" {
+  description = "alb hosts"
+  value       = resource.kubernetes_ingress_v1.apps_ingress.status[0].load_balancer[0].ingress[0].hostname
+}
+
+output "alb_arn" {
+  description = "alb arn"
+  value       = one(data.aws_lbs.alb.arns)
+}
