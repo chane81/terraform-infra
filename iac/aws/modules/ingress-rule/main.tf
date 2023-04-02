@@ -54,7 +54,6 @@ resource "kubernetes_ingress_v1" "apps_ingress" {
 # *.partner.gomicorp.click
 resource "aws_route53_record" "record_feat" {
   depends_on = [
-    # resource.kubernetes_manifest.argocd_manifest
     resource.kubernetes_ingress_v1.apps_ingress
   ]
 
@@ -65,7 +64,6 @@ resource "aws_route53_record" "record_feat" {
   type = "CNAME"
   ttl  = "300"
   records = [
-    # data.kubernetes_ingress_v1.argocd_ingress.status.0.load_balancer.0.ingress.0.hostname,
     resource.kubernetes_ingress_v1.apps_ingress.status.0.load_balancer.0.ingress.0.hostname
   ]
 }
@@ -76,7 +74,6 @@ resource "aws_route53_record" "record_feat" {
 # partner.gomicorp.click
 resource "aws_route53_record" "record_base" {
   depends_on = [
-    # resource.kubernetes_manifest.argocd_manifest
     resource.kubernetes_ingress_v1.apps_ingress
   ]
 
@@ -87,7 +84,6 @@ resource "aws_route53_record" "record_base" {
   type = "CNAME"
   ttl  = "300"
   records = [
-    # data.kubernetes_ingress_v1.argocd_ingress.status.0.load_balancer.0.ingress.0.hostname,
     resource.kubernetes_ingress_v1.apps_ingress.status.0.load_balancer.0.ingress.0.hostname
   ]
 }
