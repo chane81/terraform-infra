@@ -1,0 +1,38 @@
+# 환경 - dev, staging, prod
+variable "environment" {
+  description = "environment - dev, staging, prod"
+  type        = string
+
+  default = "dev"
+}
+
+# name
+variable "name" {
+  description = "name"
+  type        = string
+
+  default = "kr-partner"
+}
+
+# aws region
+variable "region" {
+  description = "aws region"
+  type        = string
+
+  # default region 싱가폴
+  default = "ap-southeast-1"
+}
+
+# tag 공통 요소
+variable "common_tag" {
+  description = "common tag"
+  type = object({
+    Country = string
+    Team    = string
+  })
+
+  default = {
+    Country = "kr"
+    Team    = "partner"
+  }
+}

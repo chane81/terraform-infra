@@ -1,0 +1,1 @@
+kubectl delete crd applicationsets.argoproj.io applications.argoproj.io appprojects.argoproj.io

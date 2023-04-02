@@ -1,0 +1,289 @@
+grafana:
+  enabled: true
+  adminPassword: smile2023!
+  service:
+    type: NodePort
+  defaultDashboardsTimezone: Asia/Seoul
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: gp3
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+  # istio 관련 dashboard
+  dashboards:
+    default:
+      istio-control-plane-dashboard:
+        gnetId: 7645
+        revision: 110
+        datasource: Prometheus
+      istio-mesh-dashboard:
+        gnetId: 7639
+        revision: 110
+        datasource: Prometheus
+      istio-performance-dashboard:
+        gnetId: 12153
+        revision: 1
+        datasource: Prometheus
+      istio-service-dashboard:
+        gnetId: 7636
+        revision: 110
+        datasource: Prometheus
+      istio-wasm-extension-dashboard:
+        gnetId: 13277
+        revision: 67
+        datasource: Prometheus
+      istio-workload-dashboard:
+        gnetId: 7630
+        revision: 110
+        datasource: Prometheus
+prometheus:
+  prometheusSpec:
+    ## 데이터유지 기간 - 10일
+    retention: 10d
+
+    ## Maximum size of metrics
+    ##
+    retentionSize: 10GB
+
+    ## Number of replicas of each shard to deploy for a Prometheus deployment.
+    ## Number of replicas multiplied by shards is the total number of Pods created.
+    ##
+    replicas: 2
+
+    ## Log level for Prometheus be configured in
+    ##
+    logLevel: info
+
+    ## Log format for Prometheus be configured in
+    ##
+    logFormat: logfmt
+
+    ## Prometheus StorageSpec for persistent data
+    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
+    ##
+    storageSpec:
+      ## Using PersistentVolumeClaim
+      ##
+      volumeClaimTemplate:
+        spec:
+          # storageClassName: awsElasticBlockStore
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+    # Additional volumes on the output StatefulSet definition.
+    volumes: []
+
+    # Additional VolumeMounts on the output StatefulSet definition.
+    volumeMounts: []
+
+    # https://istio.io/latest/docs/ops/integrations/prometheus/#option-1-quick-start
+    # https://raw.githubusercontent.com/istio/istio/release-1.7/manifests/charts/istio-telemetry/prometheus/templates/configmap.yaml
+    # 형식: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+    # istio Standard Metrics https://istio.io/latest/docs/reference/config/metrics/
+    additionalScrapeConfigs:
+      - job_name: 'istiod'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istiod;http-monitoring
+
+      - job_name: 'istio-mesh'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-telemetry;prometheus
+
+      - job_name: 'envoy-stats'
+        metrics_path: /stats/prometheus
+        kubernetes_sd_configs:
+          - role: pod
+        # relabel_config 설정 https://grafana.com/docs/grafana-cloud/metrics-control-usage/control-prometheus-metrics-usage/usage-reduction/?src=grafana&mdm=rss
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_pod_container_port_name ]
+          action: keep # 일치하는 대상 유지, 나머지 삭제
+          regex: '.*-envoy-prom'
+        - source_labels: [ __address__, __meta_kubernetes_pod_annotation_prometheus_io_port ]
+          action: replace # 일치하는 label 을 replacement에 지정된 새 label 로 변경
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:15090
+          target_label: __address__
+        - action: labeldrop
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [ __meta_kubernetes_namespace ]
+          action: replace
+          target_label: namespace
+        - source_labels: [ __meta_kubernetes_pod_name ]
+          action: replace
+          target_label: pod_name
+
+      - job_name: 'istio-policy'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-policy;http-policy-monitoring
+
+      - job_name: 'istio-telemetry'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-telemetry;http-monitoring
+
+      - job_name: 'galley'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-galley;http-monitoring
+
+      - job_name: 'citadel'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - istio-system
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-citadel;http-monitoring
+
+      - job_name: 'sidecar-injector'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - default
+            - istio-system
+            - traefik
+        relabel_configs:
+        - source_labels: [ __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name ]
+          action: keep
+          regex: istio-sidecar-injector;http-monitoring
+
+        # kubernetes API 스크랩
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - default
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: kubernetes;https
+
+        # kubelet 수집
+      - job_name: 'kubernetes-nodes'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics
+
+        # 컨테이너 수집
+      - job_name: 'kubernetes-cadvisor'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+
+        # node 정보 수집
+      - job_name: 'kube-dns'
+        static_configs:
+          - targets: [ 'kube-dns.kube-system.svc.cluster.local:9153' ]
+
+        #  서비스 수집
+      - job_name: 'kubernetes-service-endpoints'
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scrape ]
+            action: keep
+            regex: true
+          - source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scheme ]
+            action: replace
+            target_label: __scheme__
+            regex: (https?)
+          - source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_path ]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [ __address__, __meta_kubernetes_service_annotation_prometheus_io_port ]
+            action: replace
+            target_label: __address__
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [ __meta_kubernetes_namespace ]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [ __meta_kubernetes_service_name ]
+            action: replace
+            target_label: kubernetes_name

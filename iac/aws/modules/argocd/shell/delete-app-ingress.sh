@@ -1,0 +1,1 @@
+kubectl delete ingress -l 'tier in (frontend,backend)'

@@ -1,0 +1,10 @@
+{
+  "[hcl]": {
+    "editor.formatOnSave": false
+  },
+  "files.associations": {
+    "*.hcl": "terraform",
+    "*.tftpl": "yaml"
+  },
+  "cSpell.words": ["bestion", "Gomi", "hclfmt", "Terragrunt"]
+}

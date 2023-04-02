@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: istio-system
+  name: argocd-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/certificate-arn: ${acm_arn}
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-2016-08
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    # 그룹명을 주어 해당그룹의 로드벨런스에 인그레스를 묶이게 한다.
+    alb.ingress.kubernetes.io/group.name: 'partner'
+  labels:
+    app: argocd-ingress
+spec:
+  ingressClassName: alb
+  rules:
+    # argocd
+    # - host: ${argocd_host}
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: argo-argocd-server
+    #             port:
+    #               number: 80
+    # istio ingress
+    # - host: ${istio_host}
+    - host: "*.dev.partner.gomicorp.click"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: istio-ingressgateway
+                port:
+                  number: 80
