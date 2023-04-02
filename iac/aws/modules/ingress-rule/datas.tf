@@ -29,16 +29,16 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 }
 
 # alb
-# data "aws_lbs" "alb" {
-#   depends_on = [
-#     resource.kubernetes_manifest.argocd_manifest
-#   ]
+data "aws_lbs" "alb" {
+  depends_on = [
+    resource.kubernetes_ingress_v1.apps_ingress
+  ]
 
-#   tags = {
-#     # eks 클러스터명
-#     "elbv2.k8s.aws/cluster" = data.aws_eks_cluster.cluster.name
+  tags = {
+    # eks 클러스터명
+    "elbv2.k8s.aws/cluster" = data.aws_eks_cluster.cluster.name
 
-#     # alb group 명
-#     "ingress.k8s.aws/stack" = "partner"
-#   }
-# }
+    # alb group 명
+    "ingress.k8s.aws/stack" = "partner"
+  }
+}
