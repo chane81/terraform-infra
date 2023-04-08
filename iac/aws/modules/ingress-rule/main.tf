@@ -1,9 +1,11 @@
+# namespace - ingress
 resource "kubernetes_namespace" "ingress_namespace" {
   metadata {
     name = "ingress"
   }
 }
 
+# ingress - to istio gateway
 resource "kubernetes_ingress_v1" "apps_ingress" {
   depends_on = [
     kubernetes_namespace.ingress_namespace
@@ -22,7 +24,7 @@ resource "kubernetes_ingress_v1" "apps_ingress" {
       "alb.ingress.kubernetes.io/healthcheck-path" = "/"
       "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\": 80}, {\"HTTPS\":443}]"
       # 그룹명을 주어 해당그룹의 로드벨런스에 인그레스를 묶이게 한다.
-      "alb.ingress.kubernetes.io/group.name" = "partner"
+      "alb.ingress.kubernetes.io/group.name" = "lake"
     }
   }
 
@@ -49,9 +51,9 @@ resource "kubernetes_ingress_v1" "apps_ingress" {
 }
 
 # route 53 record
-# *.dev.partner.gomicorp.click
-# *.staging.partner.gomicorp.click
-# *.partner.gomicorp.click
+# *.dev.lake.mosaicsquare.link
+# *.staging.lake.mosaicsquare.link
+# *.lake.mosaicsquare.link
 resource "aws_route53_record" "record_feat" {
   depends_on = [
     resource.kubernetes_ingress_v1.apps_ingress
@@ -69,9 +71,9 @@ resource "aws_route53_record" "record_feat" {
 }
 
 # route 53 record
-# dev.partner.gomicorp.click
-# staging.partner.gomicorp.click
-# partner.gomicorp.click
+# dev.lake.gomicorp.click
+# staging.lake.gomicorp.click
+# lake.gomicorp.click
 resource "aws_route53_record" "record_base" {
   depends_on = [
     resource.kubernetes_ingress_v1.apps_ingress

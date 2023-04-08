@@ -1,15 +1,3 @@
-# ingress argocd data
-# data "kubernetes_ingress_v1" "argocd_ingress" {
-#   depends_on = [
-#     resource.kubernetes_manifest.argocd_manifest
-#   ]
-
-#   metadata {
-#     name      = "argocd-ingress"
-#     namespace = "istio-system"
-#   }
-# }
-
 # route53 zone - main domain
 data "aws_route53_zone" "zone_main" {
   name         = local.domain
@@ -39,6 +27,6 @@ data "aws_lbs" "alb" {
     "elbv2.k8s.aws/cluster" = data.aws_eks_cluster.cluster.name
 
     # alb group 명
-    "ingress.k8s.aws/stack" = "partner"
+    "ingress.k8s.aws/stack" = "lake"
   }
 }

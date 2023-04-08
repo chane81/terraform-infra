@@ -1,7 +1,7 @@
 locals {
   # "Additional AWS account numbers to add to the aws-auth configmap."
   map_accounts = [
-    "580214777026",
+    "292667926659",
   ]
 
   # "Additional IAM roles to add to the aws-auth configmap."
@@ -16,13 +16,13 @@ locals {
   # eks user
   map_users = [
     {
-      userarn  = "arn:aws:iam::580214777026:root"
+      userarn  = "arn:aws:iam::292667926659:root"
       username = "root"
       groups   = ["system:masters"]
     },
     {
-      userarn  = "arn:aws:iam::580214777026:user/charlie"
-      username = "charlie"
+      userarn  = "arn:aws:iam::292667926659:user/eks-user"
+      username = "eks-user"
       groups   = ["system:masters"]
     },
 
