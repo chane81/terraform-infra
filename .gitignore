@@ -44,6 +44,8 @@ tmp
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+backend.tf
+provider.tf
 
 *-debug.tfvars.json
 .terragrunt-cache
