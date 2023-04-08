@@ -8,7 +8,9 @@
 locals {
   env_path = replace(path_relative_to_include(), "environments/", "")
 
-  region = "ap-northeast-2"
+  region  = "ap-northeast-2"
+  country = "kr"
+  team    = "lake"
 }
 
 # terraform version
@@ -31,10 +33,10 @@ remote_state {
   backend = "s3"
   config = {
     encrypt        = true
-    bucket         = "terraform-poc"
+    bucket         = "terraform-kr-lake-state"
     key            = "envs/${local.env_path}/terraform.tfstate"
     region         = local.region
-    dynamodb_table = "terraform-lock-poc"
+    dynamodb_table = "terraform-kr-lake-state-lock"
   }
   generate = {
     path      = "backend.tf"
@@ -44,12 +46,12 @@ remote_state {
 
 # global input
 inputs = {
-  name   = "kr-lake"
+  name   = "${local.country}-${local.team}"
   region = local.region
 
   # tag 공통요소 (Country, Team)
   common_tag = {
-    Country = "kr"
-    Team    = "lake"
+    Country = local.country
+    Team    = local.team
   }
 }
