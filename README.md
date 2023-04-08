@@ -72,7 +72,7 @@
   - 초기 소스 다운로드 후에 init 을 하여 backend.tf 와 provider.tf 를 generate 합니다.
     ```bash
     $ cd iac/aws
-    $ terragrunt init
+    $ terragrunt run-all init
     ```
 
 - 모듈별 리소스 설명
