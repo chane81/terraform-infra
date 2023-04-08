@@ -69,6 +69,11 @@
 
   - 기존 terraform 으로 명령을 실행하여 plan, apply, destroy 를 하던것을 terragrunt 를 통해 plan, apply, destroy 를 합니다.
   - iac/aws 폴더(root) 에서 terragrunt 리소스에 대한 명령 수행 및 각 폴더별 리소스 관리가 가능합니다.
+  - 초기 소스 다운로드 후에 init 을 하여 backend.tf 와 provider.tf 를 generate 합니다.
+    ```bash
+    $ cd iac/aws
+    $ terragrunt init
+    ```
 
 - 모듈별 리소스 설명
 
