@@ -70,7 +70,6 @@ resource "kubernetes_labels" "ns_default_inject" {
 resource "helm_release" "kiali" {
   depends_on = [
     resource.helm_release.istio_ingress,
-    resource.helm_release.prometheus-stack
   ]
 
   create_namespace = true
