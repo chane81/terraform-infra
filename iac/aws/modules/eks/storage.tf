@@ -7,6 +7,7 @@ resource "kubernetes_storage_class" "sc_gp3" {
   metadata {
     name = "gp3"
   }
+
   storage_provisioner = "ebs.csi.aws.com"
   reclaim_policy      = "Delete"
   parameters = {
