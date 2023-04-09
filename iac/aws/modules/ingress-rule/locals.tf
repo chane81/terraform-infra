@@ -14,4 +14,14 @@ locals {
 
   # global-accelerator name
   accelerator_name = "${var.name}-accelerator-${var.postfix}-${var.environment}"
+
+  # hosts
+  # hosts = {
+  #   argocd  = "argocd.${local.record_base_name}"
+  #   grafana = "grafana.${local.record_base_name}"
+  # }
+  host_target = [
+    "argocd",
+    "grafana"
+  ]
 }

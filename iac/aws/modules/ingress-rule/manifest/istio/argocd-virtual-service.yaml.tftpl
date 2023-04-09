@@ -7,7 +7,8 @@ spec:
   gateways:
     - istio-gateway
   hosts:
-    - "argocd.dev.lake.mosaicsquare.link"
+    # - "argocd.dev.lake.mosaicsquare.link"
+    - ${host}
   http:
     - name: "argocd-route"
       route:
