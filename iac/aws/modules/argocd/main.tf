@@ -1,15 +1,3 @@
-
-# resource "kubernetes_labels" "ns_argocd_inject" {
-#   api_version = "v1"
-#   kind        = "Namespace"
-#   metadata {
-#     name = "argocd"
-#   }
-#   labels = {
-#     istio-injection = "enabled"
-#   }
-# }
-
 # istio inject - argocd namespace
 resource "kubernetes_namespace" "ns_argocd_inject" {
   metadata {
@@ -48,7 +36,7 @@ resource "helm_release" "argocd" {
 
 
   values = [
-    "${file("./manifest/helm-values.yml")}"
+    "${file("./manifest/helm-values.yaml")}"
   ]
 }
 

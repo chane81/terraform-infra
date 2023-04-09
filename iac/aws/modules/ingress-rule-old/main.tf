@@ -1,6 +1,6 @@
 # argocd 인그레스 생성
 resource "kubernetes_manifest" "argocd_manifest" {
-  manifest = yamldecode(templatefile("./manifest/argocd/${local.environment}.ingress-rule.yml.tftpl", {
+  manifest = yamldecode(templatefile("./manifest/argocd/${local.environment}.ingress-rule.yaml.tftpl", {
     acm_arn     = local.acm_arn
     argocd_host = replace(local.record_feat_name, "*", "argocd")
     istio_host  = replace(local.record_feat_name, "*", "istio")
