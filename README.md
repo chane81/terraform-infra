@@ -125,3 +125,15 @@
   - accept 할 vpc id 기재
 - ingress-rule
   - ssl 로 사용할 인증서 기재
+
+# 각 도구별 브라우저 접근
+
+- grafana
+  - https://grafana.dev.lake.mosaicsquare.link
+- argocd
+  - https://argocd.dev.lake.mosaicsquare.link
+- kiali
+  ```bash
+    # 터미널에서 아래 명령 수정
+    $ istioctl dashboard kiali
+  ```
