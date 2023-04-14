@@ -6,5 +6,10 @@
     "*.hcl": "terraform",
     "*.tftpl": "yaml"
   },
-  "cSpell.words": ["bestion", "Gomi", "hclfmt", "Terragrunt"]
+  "cSpell.words": ["bestion", "Gomi", "hclfmt", "Terragrunt"],
+  "files.watcherExclude": {
+    "**/.terragrunt-cache": true,
+    "**/.terraform.lock.hcl": true,
+    "**/.terraform": true
+  }
 }
