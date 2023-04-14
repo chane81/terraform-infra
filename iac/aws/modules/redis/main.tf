@@ -30,7 +30,7 @@ resource "aws_security_group" "sgp-redis" {
 # redis subnet group
 resource "aws_elasticache_subnet_group" "subnet_group_redis" {
   name       = local.subnet_group_name
-  subnet_ids = slice(local.private_subnets, 0, 2)
+  subnet_ids = slice(local.private_subnets, 2, 2)
 }
 
 # redis (aws elastiCache)
