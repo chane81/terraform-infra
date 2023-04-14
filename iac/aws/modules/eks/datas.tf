@@ -20,6 +20,7 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 
 data "aws_caller_identity" "current" {}
 
+# eks 클러스터 auto scaling policy
 data "aws_iam_policy_document" "worker_autoscaling" {
   statement {
     sid    = "eksWorkerAutoscalingAll"
