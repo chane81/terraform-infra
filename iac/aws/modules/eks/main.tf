@@ -142,6 +142,7 @@ module "eks" {
     # the VPC CNI fails to assign IPs and nodes cannot join the cluster
     # See https://github.com/aws/containers-roadmap/issues/1666 for more context
     iam_role_attach_cni_policy = true
+    key_name                   = local.node_key_pair_name
   }
 
   eks_managed_node_groups = local.env[local.environment].node_groups

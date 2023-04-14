@@ -9,7 +9,7 @@ locals {
           max_size     = 5
           desired_size = 2
 
-          # SPOT Price: 0.0403 USD/h
+          # SPOT Price: 0.0352 USD/h
           # ON_DEMAND Price: : 0.152 USD/h
           # 스펙: 2core, 16gb ram
           instance_types = ["r5.large"]
@@ -56,7 +56,7 @@ locals {
           max_size     = 5
           desired_size = 2
 
-          # SPOT Price: 0.0403 USD/h
+          # SPOT Price: 0.0352 USD/h
           # ON_DEMAND Price: : 0.152 USD/h
           # 스펙: 2core, 16gb ram
           instance_types = ["r5.large"]
@@ -103,7 +103,7 @@ locals {
           max_size     = 5
           desired_size = 2
 
-          # SPOT Price: 0.0403 USD/h
+          # SPOT Price: 0.0352 USD/h
           # ON_DEMAND Price: : 0.152 USD/h
           # 스펙: 2core, 16gb ram
           instance_types = ["r5.large"]
@@ -145,9 +145,10 @@ locals {
   environment = var.environment
 
   # name
-  name              = var.name
-  eks_cluster_name  = "${var.name}-eks-${var.postfix}-${var.environment}"
-  vpc_cni_irsa_name = "${var.name}-vpc_cni_irsa_name-${var.postfix}-${var.environment}"
+  name               = var.name
+  eks_cluster_name   = "${var.name}-eks-${var.postfix}-${var.environment}"
+  vpc_cni_irsa_name  = "${var.name}-vpc-cni-irsa-name-${var.postfix}-${var.environment}"
+  node_key_pair_name = "${var.name}-kp-node-${var.postfix}-${var.environment}"
 
   cluster_service_ipv4_cidr = local.env[var.environment].cluster_service_ipv4_cidr
   vpc_id                    = var.vpc_id
