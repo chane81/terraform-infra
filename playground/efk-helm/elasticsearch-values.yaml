@@ -1,0 +1,23 @@
+replicas: 1
+minimumMasterNodes: 1
+
+resources:
+  requests:
+    cpu: "55m"
+    memory: "512Mi"
+  limits:
+    cpu: "250m"
+    memory: "2Gi"
+
+# Disable it to use your own elastic-credential Secret.
+secret:
+  enabled: true
+  password: "password" # generated randomly if not defined
+
+# Request smaller persistent volumes.
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: "gp3"
+  resources:
+    requests:
+      storage: 8Gi

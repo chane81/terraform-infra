@@ -1,0 +1,135 @@
+# fluentd aggregator
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-aggregator-configmap
+  namespace: fluent
+data:
+  fluentd.conf: |
+    # # Prometheus Exporter Plugin
+    # # input plugin that exports metrics
+    # <source>
+    #   @type prometheus
+    #   port 24231
+    # </source>
+
+    # # input plugin that collects metrics from MonitorAgent
+    # <source>
+    #   @type prometheus_monitor
+    #   <labels>
+    #     host ${hostname}
+    #   </labels>
+    # </source>
+
+    # # input plugin that collects metrics for output plugin
+    # <source>
+    #   @type prometheus_output_monitor
+    #   <labels>
+    #     host ${hostname}
+    #   </labels>
+    # </source>
+
+    # Ignore fluentd own events
+    <match fluent.**>
+      @type null
+    </match>
+
+    # TCP input to receive logs from the forwarders
+    <source>
+      @type forward
+      bind 0.0.0.0
+      port 24224
+    </source>
+
+    # HTTP input for the liveness and readiness probes
+    <source>
+      @type http
+      bind 0.0.0.0
+      port 9880
+    </source>
+
+    # Throw the healthcheck to the standard output instead of forwarding it
+    <match fluentd.healthcheck>
+      @type stdout
+    </match>
+
+    # Send the logs to the standard output
+    <match **>
+      @type elasticsearch
+      include_tag_key true
+      host "#{ENV['ELASTICSEARCH_HOST']}"
+      port "#{ENV['ELASTICSEARCH_PORT']}"
+      logstash_format true
+
+      <buffer>
+        @type file
+        path /opt/bitnami/fluentd/logs/buffers/logs.buffer
+        flush_thread_count 2
+        flush_interval 5s
+      </buffer>
+    </match>
+---
+# fluentd forwarder
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-forwarder-configmap
+  namespace: fluent
+data:
+  fluentd.conf: |
+
+    # Ignore fluentd own events
+    <match fluent.**>
+      @type null
+    </match>
+
+    # HTTP input for the liveness and readiness probes
+    <source>
+      @type http
+      port 9880
+    </source>
+
+    # container 로그
+    <source>
+      @type tail
+      path "/var/log/containers/*.log"
+      exclude_path ["/var/log/containers/istio*.log", "/var/log/containers/*kube*.log", "/var/log/containers/coredns*.log", "/var/log/containers/k8s*.log", "/var/log/containers/elasticsearch*.log", "/var/log/containers/fluentd*.log"]
+      pos_file "/opt/bitnami/fluentd/logs/buffers/fluentd-docker.pos"
+      tag "kubernetes.*"
+      read_from_head true
+      <parse>
+        @type json
+        time_key time
+        time_format "%Y-%m-%dT%H:%M:%S.%NZ"
+        time_type string
+      </parse>
+    </source>
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    # Throw the healthcheck to the standard output instead of forwarding it
+    <match fluentd.healthcheck>
+      @type stdout
+    </match>
+
+    # debug (디버깅시에 주석을 풀어서 쓰고 확인 후 주석처리 다시 할 것)
+    # <match **>
+    #   @type stdout
+    # </match>
+
+    # aggregator 로 로그 데이터 포워드
+    <match **>
+      @type forward
+      <server>
+        host "fluentd-0.fluentd-headless.fluent.svc.cluster.local"
+        port 24224
+      </server>
+
+      <buffer>
+        @type "file"
+        path "/opt/bitnami/fluentd/logs/buffers/logs.buffer"
+        flush_thread_count 2
+        flush_interval 5s
+      </buffer>
+    </match>
