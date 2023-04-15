@@ -8,23 +8,20 @@ global:
   kibanaEnabled: true
 
 master:
-  replicaCount: 2
+  replicaCount: 1
   # resources:
   #   limits:
   #     cpu: "5000m"
   #     memory: "1Gi"
   persistence:    
     enabled: true   
-    storageClass: "gp3"    
+    storageClass: "gp3"
     accessModes:
-      - ReadWriteOnce    
+      - ReadWriteOnce
     size: 5Gi
-  # serviceAccount:
-  #   create: true
 
 security:
   ## @param security.enabled Enable X-Pack Security settings
-  ##
   enabled: false  
   elasticPassword: "password"
  
