@@ -11,7 +11,7 @@ variable "name" {
   description = "name"
   type        = string
 
-  default = "kr-partner"
+  default = "kr-lake"
 }
 
 
@@ -25,6 +25,6 @@ variable "common_tag" {
 
   default = {
     Country = "kr"
-    Team    = "partner"
+    Team    = "lake"
   }
 }

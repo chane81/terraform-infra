@@ -408,7 +408,7 @@ configs:
     annotations: {}
 
     # -- Shared secret for authenticating GitHub webhook events
-    githubSecret: "partner"
+    githubSecret: "lake"
     # -- Shared secret for authenticating GitLab webhook events
     gitlabSecret: ""
     # -- Shared secret for authenticating BitbucketServer webhook events

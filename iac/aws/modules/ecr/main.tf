@@ -1,5 +1,5 @@
 # ecr
-resource "aws_ecr_repository" "ecr_partner" {
+resource "aws_ecr_repository" "ecr" {
   for_each             = toset(local.ecr_name)
   name                 = each.key
   image_tag_mutability = "MUTABLE"

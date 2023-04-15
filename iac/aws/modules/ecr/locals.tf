@@ -28,7 +28,7 @@ locals {
 
   environment = var.environment
 
-  # kr-partner-{이름}-{환경}
-  # ex) kr-partner-api-dev
+  # kr-lake-{이름}-{환경}
+  # ex) kr-lake-api-dev
   ecr_name = local.env[var.environment].ecr_name
 }

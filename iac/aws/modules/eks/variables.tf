@@ -11,7 +11,7 @@ variable "name" {
   description = "name"
   type        = string
 
-  default = "kr-partner"
+  default = "kr-lake"
 }
 
 # vpc id
@@ -48,6 +48,6 @@ variable "common_tag" {
 
   default = {
     Country = "kr"
-    Team    = "partner"
+    Team    = "lake"
   }
 }

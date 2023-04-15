@@ -92,7 +92,7 @@
     - vpc 생성
   - vpc-peering
     - vpc peering 연결 설정
-    - partner center 의 신규생성 vpc 의 리소스 와 기존 사용하던 vpc 의 rds 와의 연결을 위해 peering 설정
+    - 신규생성 vpc 의 리소스 와 기존 사용하던 vpc 의 rds 와의 연결을 위해 peering 설정
 
 - Command
 

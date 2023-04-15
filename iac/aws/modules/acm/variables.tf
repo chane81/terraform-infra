@@ -8,6 +8,6 @@ variable "common_tag" {
 
   default = {
     Country = "kr"
-    Team    = "partner"
+    Team    = "team"
   }
 }
