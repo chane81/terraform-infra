@@ -1,12 +1,12 @@
 # ingress argocd data
-data "kubernetes_ingress_v1" "argocd_ingress" {
+data "kubernetes_ingress_v1" "ingress" {
   depends_on = [
-    resource.kubernetes_manifest.argocd_manifest
+    resource.kubernetes_manifest.ingress_manifest
   ]
 
   metadata {
     name      = "argocd-ingress"
-    namespace = "istio-system"
+    namespace = "argocd"
   }
 }
 
@@ -31,7 +31,7 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 # alb
 data "aws_lbs" "alb" {
   depends_on = [
-    resource.kubernetes_manifest.argocd_manifest
+    resource.kubernetes_manifest.ingress_manifest
   ]
 
   tags = {
@@ -39,6 +39,6 @@ data "aws_lbs" "alb" {
     "elbv2.k8s.aws/cluster" = data.aws_eks_cluster.cluster.name
 
     # alb group 명
-    "ingress.k8s.aws/stack" = "partner"
+    "ingress.k8s.aws/stack" = "lake"
   }
 }

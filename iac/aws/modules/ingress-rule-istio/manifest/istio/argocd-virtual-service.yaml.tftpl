@@ -1,18 +1,18 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: grafana-virtual-service
+  name: argocd-virtual-service
   namespace: ingress
 spec:
   gateways:
     - istio-gateway
   hosts:
-    # - "grafana.dev.partner.gomicorp.click"
+    # ex) argocd.dev.lake.mosaicsquare.link
     - ${host}
   http:
-    - name: "grafana-route"
+    - name: "argocd-route"
       route:
       - destination:
-          host: prometheus-grafana.monitoring.svc.cluster.local
+          host: argo-argocd-server.argocd.svc.cluster.local
           port:
             number: 80

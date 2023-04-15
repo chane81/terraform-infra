@@ -17,7 +17,7 @@ variable "name" {
   description = "name"
   type        = string
 
-  default = "kr-partner"
+  default = "kr-lake"
 }
 
 # eks cluster id
@@ -38,6 +38,13 @@ variable "common_tag" {
 
   default = {
     Country = "kr"
-    Team    = "partner"
+    Team    = "lake"
   }
+}
+
+# acm arn
+variable "acm_arn" {
+  description = "acm arn"
+  type        = string
+  default     = ""
 }

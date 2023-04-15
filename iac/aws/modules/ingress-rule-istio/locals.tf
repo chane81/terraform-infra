@@ -7,9 +7,12 @@ locals {
   eks_name         = var.eks_cluster_name
   record_feat_name = "*${local.environment == "prod" ? "" : ".${local.environment}"}.${local.team_domain}"
   record_base_name = "${local.environment == "prod" ? "" : "${local.environment}."}${local.team_domain}"
+  record_names = [
+    local.record_feat_name,
+    local.record_base_name
+  ]
 
   # acm arn
-  # acm_arn = "arn:aws:acm:ap-southeast-1:580214777026:certificate/58b2aed0-8a54-426f-99f3-650994be9d87"
   acm_arn = var.acm_arn
 
   # global-accelerator name

@@ -51,37 +51,27 @@ resource "kubernetes_ingress_v1" "apps_ingress" {
 }
 
 # route 53 record
+# [dev]
 # *.dev.lake.mosaicsquare.link
+# dev.lake.mosaicsquare.link
+#
+# [staging]
 # *.staging.lake.mosaicsquare.link
+# staging.lake.mosaicsquare.link
+#
+# [prod]
 # *.lake.mosaicsquare.link
+# lake.mosaicsquare.link
 resource "aws_route53_record" "record_feat" {
   depends_on = [
     resource.kubernetes_ingress_v1.apps_ingress
   ]
 
-  allow_overwrite = true
-  zone_id         = data.aws_route53_zone.zone_main.zone_id
-  name            = local.record_feat_name
-
-  type = "CNAME"
-  ttl  = "300"
-  records = [
-    resource.kubernetes_ingress_v1.apps_ingress.status.0.load_balancer.0.ingress.0.hostname
-  ]
-}
-
-# route 53 record
-# dev.lake.gomicorp.click
-# staging.lake.gomicorp.click
-# lake.gomicorp.click
-resource "aws_route53_record" "record_base" {
-  depends_on = [
-    resource.kubernetes_ingress_v1.apps_ingress
-  ]
+  count = length(local.record_names)
 
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.zone_main.zone_id
-  name            = local.record_base_name
+  name            = local.record_names[count.index]
 
   type = "CNAME"
   ttl  = "300"
