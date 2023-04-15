@@ -1,0 +1,24 @@
+config:
+  inputs: |
+    [INPUT]
+        Name              tail
+        Exclude_Path      /var/log/containers/istio*.log, /var/log/containers/*kube*.log, /var/log/containers/coredns*.log, /var/log/containers/k8s*.log, /var/log/containers/elasticsearch*.log, /var/log/containers/fluent*.log
+        Path              /var/log/containers/*.log
+        multiline.parser  docker, cri
+        Tag               kube.*
+        Mem_Buf_Limit     20MB
+        Skip_Long_Lines   On
+        Refresh_Interval  5
+  outputs: |
+    [OUTPUT]
+        Name              forward
+        Match             *
+        Host              fluentd-0.fluentd-headless.fluent.svc.cluster.local
+        Port              24224       
+        Retry_Limit       False
+
+  # 디버깅용
+  # outputs: |
+  #   [OUTPUT]
+  #       Name  stdout
+  #       Match kube.*

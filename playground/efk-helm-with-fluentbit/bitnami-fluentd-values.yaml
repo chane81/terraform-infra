@@ -1,0 +1,18 @@
+aggregator:
+  enabled: true
+
+  # replicas count
+  replicaCount: 1
+  
+  # config map
+  configMap: fluentd-aggregator-configmap
+
+  # elastic search 설정
+  extraEnvVars:
+    - name: ELASTICSEARCH_HOST
+      value: elasticsearch-coordinating-hl.elastic.svc.cluster.local
+    - name: ELASTICSEARCH_PORT
+      value: "9200"
+
+forwarder:
+  enabled: false  

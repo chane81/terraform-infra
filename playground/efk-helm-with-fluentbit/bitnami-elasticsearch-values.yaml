@@ -1,0 +1,34 @@
+global:
+  storageClass: "gp3"
+  elasticsearch:
+    service:
+      name: elasticsearch
+      ports:
+        restAPI: 9200
+  kibanaEnabled: true
+
+master:
+  replicaCount: 1
+  # resources:
+  #   limits:
+  #     cpu: "5000m"
+  #     memory: "1Gi"
+  persistence:    
+    enabled: true   
+    storageClass: "gp3"
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+
+security:
+  ## @param security.enabled Enable X-Pack Security settings
+  enabled: false  
+  elasticPassword: "password"
+ 
+data:
+  persistence:
+    enabled: true
+    storageClass: "gp3"   
+    accessModes:
+      - ReadWriteOnce    
+    size: 5Gi

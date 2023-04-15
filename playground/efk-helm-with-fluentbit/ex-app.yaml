@@ -1,0 +1,45 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# logging 테스트용 example app
+#
+# http://localhost:xxxx/test << console info
+# http://localhost:xxxx/test/error << console error
+# http://localhost:xxxx/test/warn << console warn
+# ---------------------------------------------------------------------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-node
+  namespace: default
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: api-node
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-node
+  template:
+    metadata:
+      labels:
+        app: api-node
+    spec:
+      imagePullSecrets:
+      - name: dockerhub-credential
+      containers:
+      - image: chane81/node-api:1.0        
+        imagePullPolicy: Always
+        name: api-node
+        ports:
+        - containerPort: 8080
+          name: http
