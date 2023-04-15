@@ -8,7 +8,7 @@ spec:
   gateways:
     - ingress/istio-gateway
   hosts:
-    - "product.dev.partner.gomicorp.click"
+    - "product.dev.lake.mosaicsquare.link"
   http:
     - name: "product-route"
       route:

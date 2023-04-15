@@ -7,7 +7,7 @@ spec:
   gateways:
     - istio-gateway
   hosts:
-    - "grafana.dev.partner.gomicorp.click"
+    - "grafana.dev.lake.mosaicsquare.link"
   http:
     - name: "grafana-route"
       route:
