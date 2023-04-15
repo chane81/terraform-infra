@@ -21,6 +21,8 @@ $ helm repo add bitnami https://charts.bitnami.com/bitnami
 $ helm install elasticsearch bitnami/elasticsearch \
   -n elastic --create-namespace \
   -f ./bitnami-elasticsearch-values.yaml
+
+# helm uninstall elasticsearch -n elastic
 ```
 
 ## Elasticsearch
@@ -77,12 +79,16 @@ $ helm install kibana elastic/kibana \
 $ helm repo add fluent https://fluent.github.io/helm-charts
 
 # forwarder, aggregator configmap
-$ k apply -f fluentd-configmap.yaml
+$ k create namespace fluent |
+  k apply -f bitnami-fluentd-configmap.yaml
 
 # fluentd create
 $ helm install fluentd bitnami/fluentd \
  -n fluent --create-namespace \
  -f ./bitnami-fluentd-values.yaml
+
+# uninstall
+$ helm uninstall fluentd -n fluent
 ```
 
 ## Fluent-bit
