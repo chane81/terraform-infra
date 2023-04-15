@@ -10,7 +10,7 @@ aggregator:
   # elastic search 설정
   extraEnvVars:
     - name: ELASTICSEARCH_HOST
-      value: "elasticsearch-coordinating-hl.elastic.svc.cluster.local"
+      value: elasticsearch-coordinating-hl.elastic.svc.cluster.local
     - name: ELASTICSEARCH_PORT
       value: "9200"
 
