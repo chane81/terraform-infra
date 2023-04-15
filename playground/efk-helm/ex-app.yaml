@@ -1,3 +1,11 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# logging 테스트용 example app
+#
+# http://localhost:xxxx/test << console info
+# http://localhost:xxxx/test/error << console error
+# http://localhost:xxxx/test/warn << console warn
+# ---------------------------------------------------------------------------------------------------------------------
+
 apiVersion: v1
 kind: Service
 metadata:
